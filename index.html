@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="km" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apple Watch Shop - Chhaysem</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@400;500;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* --- THEME VARIABLES --- */
+        
+         :root {
+            --bg-color: #0a0a0a;
+            --text-color: #e5e5e5;
+            --text-color-subtle: #a1a1aa;
+            /* zinc-400 */
+            --card-bg-color: #1a1a1a;
+            --border-color: #2a2a2a;
+            --header-bg: rgba(0, 0, 0, 0.8);
+            --nav-active-bg: #27272a;
+            /* zinc-800 */
+            --cart-sidebar-bg: #121212;
+            --input-bg: #2a2a2a;
+            --input-border: #4a4a4a;
+            --quantity-btn-bg: #3f3f46;
+            /* zinc-700 */
+            --primary-accent: #f59e0b;
+            /* amber-500 */
+            --primary-accent-hover: #fbbf24;
+            /* amber-400 */
+        }
+        /* --- BASE STYLES --- */
+        
+        body {
+            font-family: 'Kantumruy Pro', 'Inter', sans-serif;
+            background-image: url('APPLE.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--text-color);
+            transition: color 0.3s ease;
+        }
+        
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            opacity: 0.95;
+            z-index: -1;
+            transition: background-color 0.3s ease;
+        }
+        
+        .nav-link {
+            @apply px-4 py-2 transition-colors duration-300 rounded-md;
+            color: var(--text-color-subtle);
+        }
+        
+        .nav-link:hover {
+            color: var(--text-color);
+        }
+        
+        .nav-link.active {
+            color: var(--text-color);
+            background-color: var(--nav-active-bg);
+        }
+        
+        .glow-text {
+            text-shadow: 0 0 8px rgba(251, 191, 36, 0.7), 0 0 20px rgba(251, 191, 36, 0.5);
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .card {
+            background-color: var(--card-bg-color);
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        
+        .btn-primary {
+            @apply font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover: scale-105 shadow-lg;
+            background-color: var(--primary-accent);
+            color: #000;
+            box-shadow: 0 4px 14px 0 rgba(251, 191, 36, 0.2);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-accent-hover);
+        }
+        
+        .social-icon {
+            @apply w-12 h-12 flex items-center justify-center text-2xl rounded-full transition-all duration-300;
+        }
+        /* --- COMPONENT STYLES --- */
+        
+        header {
+            background-color: var(--header-bg);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        #mobile-menu {
+            background-color: var(--bg-color);
+        }
+        
+        .cart-btn {
+            color: var(--text-color);
+        }
+        
+        .cart-btn:hover {
+            color: var(--primary-accent-hover);
+        }
+        
+        p,
+        .text-subtle {
+            color: var(--text-color-subtle);
+        }
+        
+        .text-main {
+            color: var(--text-color);
+        }
+        
+        .border-main {
+            border-color: var(--border-color);
+        }
+        
+        .bg-card-bg-color {
+            background-color: var(--card-bg-color);
+        }
+        
+        .bg-input-bg {
+            background-color: var(--input-bg);
+        }
+        
+        .border-input-border {
+            border-color: var(--input-border);
+        }
+        /* Cart & Payment Styles */
+        
+        #cart-modal.hidden,
+        #payment-modal.hidden,
+        #prize-modal.hidden {
+            display: none;
+        }
+        
+        #cart-sidebar {
+            transition: transform 0.3s ease-in-out;
+            background-color: var(--cart-sidebar-bg);
+        }
+        
+        #cart-modal:not(.hidden) #cart-sidebar {
+            transform: translateX(0);
+        }
+        
+        .cart-item-quantity button {
+            background-color: var(--quantity-btn-bg);
+        }
+        
+        .cart-item-quantity input {
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            border: 1px solid var(--input-border);
+        }
+        
+        #success-toast.translate-x-full {
+            transform: translateX(120%);
+        }
+        /* Hide number input arrows */
+        
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+        /* Spin Wheel Styles */
+        
+        #wheel-container {
+            position: relative;
+            width: 90vw;
+            max-width: 450px;
+            height: 90vw;
+            max-height: 450px;
+            margin: 2rem auto;
+        }
+        
+        #wheel-canvas {
+            width: 100%;
+            height: 100%;
+            transition: transform 5s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+        
+        #wheel-pointer {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 15px 40px 15px;
+            border-color: transparent transparent #ff0000 transparent;
+            transform: translate(-50%, -120%);
+            z-index: 10;
+        }
+        
+        #spin-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background-color: var(--card-bg-color);
+            border: 8px solid var(--border-color);
+            color: var(--primary-accent);
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 11;
+        }
+        
+        #spin-btn:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            color: var(--primary-accent-hover);
+        }
+        
+        #spin-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        #website-qr-code {
+            padding: 0.5rem;
+            background-color: white;
+            border-radius: 0.5rem;
+            display: inline-block;
+        }
+        
+        #website-qr-code img {
+            border-radius: 0.25rem;
+        }
+    </style>
+</head>
+
+<body class="antialiased">
+
+    <!-- Header -->
+    <header class="backdrop-blur-sm sticky top-0 z-40">
+        <div class="container mx-auto px-6 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <img src="Logo Watch.jfif" alt="Apple Watch Shop Logo" class="h-12 w-12 rounded-full object-cover mr-4 border-2 border-amber-500">
+                    <span class="text-xl font-bold glow-text hidden sm:block text-main">APPLE WATCH SHOP</span>
+                </div>
+                <nav class="hidden md:flex items-center space-x-1">
+                    <a href="#home" class="nav-link active" onclick="showSection('home', this)">ទំព័រដើម</a>
+                    <a href="#products" class="nav-link" onclick="showSection('products', this)">ផលិតផល</a>
+                    <a href="#services" class="nav-link" onclick="showSection('services', this)">សេវាកម្ម</a>
+                    <a href="#vip" class="nav-link" onclick="showSection('vip', this)">សមាជិក VIP</a>
+                    <a href="#wheel" class="nav-link" onclick="showSection('wheel', this)">កងសំណាង</a>
+                    <a href="#contact" class="nav-link" onclick="showSection('contact', this)">ទំនាក់ទំនង</a>
+                </nav>
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <button id="cart-button" class="cart-btn text-2xl transition-colors">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span id="cart-count" class="absolute -top-2 -right-3 bg-amber-500 text-black text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center border-2 border-black">0</span>
+                        </button>
+                    </div>
+                    <div class="md:hidden">
+                        <button id="mobile-menu-button" class="text-main focus:outline-none">
+                            <i class="fas fa-bars text-2xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-main">
+            <a href="#home" class="block py-3 px-6 text-center nav-link active" onclick="showSection('home', this, true)">ទំព័រដើម</a>
+            <a href="#products" class="block py-3 px-6 text-center nav-link" onclick="showSection('products', this, true)">ផលិតផល</a>
+            <a href="#services" class="block py-3 px-6 text-center nav-link" onclick="showSection('services', this, true)">សេវាកម្ម</a>
+            <a href="#vip" class="block py-3 px-6 text-center nav-link" onclick="showSection('vip', this, true)">សមាជិក VIP</a>
+            <a href="#wheel" class="block py-3 px-6 text-center nav-link" onclick="showSection('wheel', this, true)">កងសំណាង</a>
+            <a href="#contact" class="block py-3 px-6 text-center nav-link" onclick="showSection('contact', this, true)">ទំនាក់ទំនង</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-12">
+
+        <!-- Home Section -->
+        <section id="home" class="section active">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-6xl font-bold text-main mb-4">
+                    <span class="glow-text">Apple Watch Shop</span> សូមស្វាគមន៍
+                </h1>
+                <p class="text-lg md:text-xl max-w-3xl mx-auto mb-8 text-subtle">
+                    ហាងយើងខ្ញុំមានលក់គ្រប់ Model Apple ១ទឹកពី USA 🇺🇸 គុណភាពខ្ពស់​ ជាមួយនឹងការធានាត្រឹមត្រូវ។
+                </p>
+                <button class="btn-primary" onclick="showSection('products', document.querySelector('a[href=\'#products\']'))">
+                    រកមើលផលិតផល
+                </button>
+            </div>
+            <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="card p-6 rounded-xl text-center transform hover:-translate-y-2 transition-transform duration-300">
+                    <i class="fas fa-mobile-screen-button text-4xl text-amber-500 mb-4"></i>
+                    <h3 class="text-xl font-bold text-main mb-2">ផលិតផល Apple</h3>
+                    <p class="text-subtle">iPhone, Apple Watch, iPad, MacBook និងច្រើនទៀត</p>
+                </div>
+                <div class="card p-6 rounded-xl text-center transform hover:-translate-y-2 transition-transform duration-300">
+                    <i class="fas fa-tools text-4xl text-amber-500 mb-4"></i>
+                    <h3 class="text-xl font-bold text-main mb-2">សេវាជួសជុល</h3>
+                    <p class="text-subtle">អ្នកជំនាញមានបទពិសោធន៍យូរឆ្នាំក្នុងការជួសជុល</p>
+                </div>
+                <div class="card p-6 rounded-xl text-center transform hover:-translate-y-2 transition-transform duration-300">
+                    <i class="fas fa-lock-open text-4xl text-amber-500 mb-4"></i>
+                    <h3 class="text-xl font-bold text-main mb-2">ដោះ Icloud</h3>
+                    <p class="text-subtle">សេវាកម្មដោះ iCloud ដែលអាចទុកចិត្តបាន និងឆាប់រហ័ស</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Products Section -->
+        <section id="products" class="section">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-main glow-text">ផលិតផលរបស់យើង</h2>
+                <p class="mt-2 text-subtle">ស្វែងរកផលិតផល Apple ដែលអ្នកចូលចិត្ត</p>
+            </div>
+            <div id="product-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                <!-- Product items will be injected here by JS -->
+            </div>
+        </section>
+
+
+        <!-- Services Section -->
+        <section id="services" class="section">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-main glow-text">សេវាកម្មរបស់យើង</h2>
+                <p class="mt-2 text-subtle">អ្វីគ្រប់យ៉ាងដែលអ្នកត្រូវការសម្រាប់ផលិតផល Apple</p>
+            </div>
+
+            <div class="card max-w-5xl mx-auto p-6 sm:p-8 rounded-xl overflow-hidden md:flex md:items-center md:gap-8">
+                <div class="md:w-1/2">
+                    <img src="fix.jpg" alt="Apple Repair Service" class="rounded-lg shadow-lg w-full h-full object-cover">
+                </div>
+                <div class="md:w-1/2 mt-6 md:mt-0">
+                    <h3 class="text-3xl font-bold text-amber-500 mb-4">👨‍🔧🪛 សេវាកម្មជួសជុល</h3>
+                    <p class="text-subtle mb-6">យើងមានអ្នកជំនាញ បទពិសោធន៍យូរឆ្នាំ ក្នុងការជួសជុលផលិតផល Apple គ្រប់ប្រភេទ។</p>
+                    <ul class="space-y-3 list-disc list-inside text-subtle mb-8">
+                        <li>ជួសជុលគ្រប់បញ្ហាផលិតផល Apple</li>
+                        <li>ដោះ Icloud ប្រកបដោយទំនុកចិត្ត</li>
+                        <li>គ្រឿងបន្លាស់ Original គុណភាពខ្ពស់</li>
+                        <li>ធានាលើគុណភាព និងតម្លៃសមរម្យ</li>
+                    </ul>
+                    <div class="space-y-4">
+                        <a href="https://t.me/FixAppleStore" target="_blank" class="flex items-center justify-center gap-3 w-full btn-primary bg-sky-500 hover:bg-sky-400 text-white shadow-sky-400/30">
+                            <i class="fab fa-telegram text-2xl"></i>
+                            <span>ទំនាក់ទំនងជួសជុល (Telegram)</span>
+                        </a>
+                        <a href="tel:010827118" class="flex items-center justify-center gap-3 w-full btn-primary bg-green-500 hover:bg-green-400 text-white shadow-green-400/30">
+                            <i class="fas fa-phone-alt text-xl"></i>
+                            <span>☎️ 010 827 118</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card max-w-5xl mx-auto p-8 rounded-xl text-center mt-8">
+                <h3 class="text-2xl font-bold text-main mb-3">ការលក់ផលិតផល</h3>
+                <p class="text-subtle mb-6">ហាងយើងខ្ញុំមានលក់គ្រប់ Model Apple ១ទឹកពី USA 🇺🇸 គុណភាពខ្ពស់​ ជាមួយនឹងការធានាត្រឹមត្រូវ។</p>
+                <button onclick="showSection('products', document.querySelector('a[href=\'#products\']'))" class="btn-primary inline-block">
+                    🛍️ មើលទំនិញទាំងអស់
+                </button>
+            </div>
+        </section>
+
+        <!-- VIP Section -->
+        <section id="vip" class="section">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-main glow-text">កម្មវិធីសមាជិក VIP</h2>
+                <p class="mt-2 text-subtle">ចូលរួមជាមួយយើងដើម្បីទទួលបានអត្ថប្រយោជន៍พิเศษ</p>
+            </div>
+            <div class="card max-w-2xl mx-auto p-8 rounded-xl">
+                <div class="text-center">
+                    <i class="fas fa-star text-5xl text-amber-500 mb-4"></i>
+                    <h3 class="text-2xl font-semibold text-main mb-4">ក្លាយជាសមាជិក VIP!</h3>
+                    <p class="text-subtle mb-6">ចុះឈ្មោះដើម្បីទទួលបានលេខកូដប្រូម៉ូសិន ការបញ្ចុះតម្លៃពិសេស និងព័ត៌មានអំពីផលិតផលថ្មីៗមុនគេ។</p>
+                </div>
+                <form id="vip-form" class="space-y-4">
+                    <div>
+                        <label for="vip-name" class="block text-sm font-medium text-subtle">ឈ្មោះ</label>
+                        <input type="text" id="vip-name" name="vip-name" required class="mt-1 block w-full bg-input-bg border-input-border rounded-md shadow-sm py-2 px-3 text-main focus:outline-none focus:ring-amber-500 focus:border-amber-500">
+                    </div>
+                    <div>
+                        <label for="vip-phone" class="block text-sm font-medium text-subtle">លេខទូរស័ព្ទ</label>
+                        <input type="tel" id="vip-phone" name="vip-phone" required class="mt-1 block w-full bg-input-bg border-input-border rounded-md shadow-sm py-2 px-3 text-main focus:outline-none focus:ring-amber-500 focus:border-amber-500">
+                    </div>
+                    <button type="submit" class="w-full btn-primary">ចុះឈ្មោះ</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Wheel Section -->
+        <section id="wheel" class="section">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl md:text-4xl font-bold text-main glow-text">Spin & Win / កងសំណាង</h2>
+                <p class="mt-2 text-subtle">Spin to win big prizes! / បង្វិលដើម្បីឈ្នះរង្វាន់ធំ!</p>
+                <div class="mt-4 max-w-2xl mx-auto p-4 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-300">
+                    <p class="font-semibold">🛍️ រាល់ការក្លាយជាភ្ញៀវ VIP ខាងខ្ញុំបងៗនឹងទទួលបានការបង្វិលកងរាល់ការចំណាយចាប់ពី 150$-300$ ឡើងទៅអាចសន្សំពិន្ទុប្ដូរយករង្វាន់ជាច្រើន🎁🎊🙏🏻</p>
+                </div>
+            </div>
+            <div class="flex justify-center mb-6">
+                <div class="card p-3 rounded-lg flex items-center gap-3">
+                    <i class="fas fa-gem text-2xl text-amber-400"></i>
+                    <span class="text-xl font-bold text-main">ពិន្ទុសរុប:</span>
+                    <span id="total-points" class="text-2xl font-bold text-amber-400">0</span>
+                </div>
+            </div>
+            <div id="wheel-container">
+                <canvas id="wheel-canvas" width="500" height="500"></canvas>
+                <div id="wheel-pointer"></div>
+                <button id="spin-btn">SPIN</button>
+            </div>
+        </section>
+
+
+        <!-- Contact Section -->
+        <section id="contact" class="section">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-main glow-text">ទំនាក់ទំនងមកយើង</h2>
+                <p class="mt-2 text-subtle">យើងខ្ញុំរង់ចាំបម្រើសេវាកម្មជូនលោកអ្នក</p>
+            </div>
+            <div class="card max-w-3xl mx-auto p-8 rounded-xl">
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-semibold text-main">លេខទូរស័ព្ទ</h3>
+                    <a href="tel:010827118" class="text-4xl font-bold text-amber-500 hover:text-amber-400 transition-colors duration-300 tracking-wider">010 827 118</a>
+                </div>
+
+                <div class="w-full border-t border-main my-8"></div>
+
+                <div class="text-center">
+                    <h3 class="text-2xl font-semibold text-main mb-6">តាមដានពួកយើងតាមបណ្ដាញសង្គម</h3>
+                    <div class="flex justify-center items-center gap-4 flex-wrap">
+                        <a href="https://web.facebook.com/profile.php?id=100065270179580" target="_blank" class="social-icon bg-blue-600 hover:bg-blue-500 text-white" aria-label="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="https://www.tiktok.com/@applewatchshop?is_from_webapp=1&sender_device=pc" target="_blank" class="social-icon bg-black hover:bg-gray-800 border border-gray-600 text-white" aria-label="TikTok">
+                            <i class="fab fa-tiktok"></i>
+                        </a>
+                        <a href="https://t.me/Chhaysem" target="_blank" class="social-icon bg-sky-500 hover:bg-sky-400 text-white" aria-label="Telegram Shop">
+                            <i class="fab fa-telegram"></i>
+                        </a>
+                        <a href="https://t.me/FixAppleStore" target="_blank" class="social-icon bg-gray-600 hover:bg-gray-500 text-white" aria-label="Telegram Fix">
+                            <i class="fas fa-tools"></i>
+                        </a>
+                        <a href="https://t.me/ChhaysemAPS" target="_blank" class="social-icon bg-yellow-500 hover:bg-yellow-400 text-black" aria-label="Telegram Announcements">
+                            <i class="fas fa-bullhorn"></i>
+                        </a>
+                        <a href="https://t.me/ChhaySemZ" target="_blank" class="social-icon bg-sky-500 hover:bg-sky-400 text-white" aria-label="Telegram Z">
+                            <i class="fab fa-telegram"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="w-full border-t border-main my-8"></div>
+
+                <div class="text-center">
+                    <h3 class="text-2xl font-semibold text-main mb-6">វិធីសាស្រ្តទូទាត់ប្រាក់</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                        <div class="flex flex-col items-center">
+                            <img src="QR ABA.jpg" alt="ABA PAY QR Code" class="w-full max-w-[200px] h-auto rounded-lg shadow-md border-2 border-main">
+                            <p class="mt-3 font-semibold text-subtle">ABA PAY</p>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <img src="QR AC.jpg" alt="ACLEDA QR Code" class="w-full max-w-[200px] h-auto rounded-lg shadow-md border-2 border-main">
+                            <p class="mt-3 font-semibold text-subtle">ACLEDA</p>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <img src="QR USDT.jpg" alt="USDT QR Code" class="w-full max-w-[200px] h-auto rounded-lg shadow-md border-2 border-main">
+                            <p class="mt-3 font-semibold text-subtle">USDT (BEP20)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-main mt-16">
+        <div class="container mx-auto px-6 py-6 text-center text-subtle">
+            <div class="mb-4">
+                <h4 class="font-semibold text-main mb-2">Scan to Visit Website / ស្កេនដើម្បីចូលមើលគេហទំព័រ</h4>
+                <div id="website-qr-code" class="mx-auto"></div>
+            </div>
+            <p>&copy; 2025 Apple Watch Shop. All Rights Reserved.</p>
+            <p>បង្កើតឡើងសម្រាប់ Chhaysem</p>
+        </div>
+    </footer>
+
+    <!-- Shopping Cart Modal -->
+    <div id="cart-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden">
+        <div id="cart-sidebar" class="absolute top-0 right-0 h-full w-full max-w-md flex flex-col transform translate-x-full shadow-2xl shadow-black">
+            <!-- Cart Header -->
+            <div class="flex justify-between items-center p-5 border-b border-main">
+                <h2 class="text-xl font-bold glow-text text-main">រទេះទំនិញ</h2>
+                <button id="close-cart-button" class="text-2xl text-subtle hover:text-main transition-colors">&times;</button>
+            </div>
+            <!-- Cart Items -->
+            <div id="cart-items" class="flex-grow p-5 overflow-y-auto space-y-4">
+                <p class="text-subtle text-center mt-8">រទេះទំនិញរបស់អ្នកនៅទទេ</p>
+            </div>
+            <!-- Promo Code -->
+            <div class="p-5 border-t border-main">
+                <label for="promo-code" class="text-sm font-medium text-subtle">លេខកូដប្រូម៉ូសិន</label>
+                <div class="flex gap-2 mt-1">
+                    <input type="text" id="promo-code" class="flex-grow bg-input-bg border border-input-border rounded-md px-3 py-2 text-main focus:outline-none focus:ring-1 focus:ring-amber-500" placeholder="បញ្ចូលលេខកូដនៅទីនេះ">
+                    <button id="apply-promo-btn" class="btn-primary py-2 px-4 text-sm font-bold">ប្រើ</button>
+                </div>
+                <p id="promo-status" class="text-xs mt-2 h-4"></p>
+            </div>
+            <!-- Cart Footer -->
+            <div class="p-5 border-t border-main bg-black/50">
+                <div class="space-y-2 mb-4 text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-subtle">សរុបរង:</span>
+                        <span id="cart-subtotal" class="text-main">$0.00</span>
+                    </div>
+                    <div id="discount-row" class="flex justify-between hidden">
+                        <span class="text-subtle">ការបញ្ចុះតម្លៃ:</span>
+                        <span id="cart-discount" class="text-green-400">-$0.00</span>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center text-xl font-bold">
+                    <span class="text-subtle">សរុប:</span>
+                    <span id="cart-total" class="text-amber-400">$0.00</span>
+                </div>
+                <button id="checkout-btn" class="w-full btn-primary mt-4">ទូទាត់</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="payment-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="card w-full max-w-lg p-6 rounded-xl relative animate-fadeIn">
+            <button id="close-payment-modal-btn" class="absolute top-4 right-4 text-2xl text-subtle hover:text-main">&times;</button>
+            <h2 class="text-2xl font-bold text-center glow-text text-main mb-4">បញ្ជាក់ការទូទាត់</h2>
+            <div class="text-center mb-6">
+                <p class="text-subtle">ចំនួនសរុបដែលត្រូវទូទាត់:</p>
+                <p id="payment-total" class="text-3xl font-bold text-amber-400">$0.00</p>
+            </div>
+            <p class="text-center text-subtle mb-4">សូមស្កេន QR Code ខាងក្រោមដើម្បីទូទាត់:</p>
+            <div class="grid grid-cols-3 gap-4 mb-6">
+                <div class="flex flex-col items-center">
+                    <img src="QR ABA.jpg" alt="ABA PAY QR Code" class="w-full h-auto rounded-lg shadow-md border-2 border-main">
+                    <p class="mt-2 font-semibold text-subtle text-xs">ABA PAY</p>
+                </div>
+                <div class="flex flex-col items-center">
+                    <img src="QR AC.jpg" alt="ACLEDA QR Code" class="w-full max-w-[200px] h-auto rounded-lg shadow-md border-2 border-main">
+                    <p class="mt-2 font-semibold text-subtle text-xs">ACLEDA</p>
+                </div>
+                <div class="flex flex-col items-center">
+                    <img src="QR USDT.jpg" alt="USDT QR Code" class="w-full max-w-[200px] h-auto rounded-lg shadow-md border-2 border-main">
+                    <p class="mt-2 font-semibold text-subtle text-xs">USDT</p>
+                </div>
+            </div>
+            <div class="flex gap-4">
+                <button id="back-to-cart-btn" class="w-full btn-primary bg-gray-600 hover:bg-gray-500 text-white">ត្រឡប់ទៅរទេះវិញ</button>
+                <button id="confirm-payment-btn" class="w-full btn-primary">បញ្ជាក់ការទូទាត់</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prize Modal -->
+    <div id="prize-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="card w-full max-w-sm p-8 rounded-xl text-center relative animate-fadeIn">
+            <i class="fas fa-trophy text-5xl text-amber-500 mb-4"></i>
+            <h2 class="text-2xl font-bold text-center glow-text text-main mb-4">Congratulations! / សូមអបអរសាទរ!</h2>
+            <p class="text-subtle mb-1">You won:</p>
+            <p id="prize-text" class="text-xl font-bold text-amber-400 mb-6"></p>
+            <button id="close-prize-modal-btn" class="w-full btn-primary">CLOSE</button>
+        </div>
+    </div>
+
+    <!-- Success Message Toast -->
+    <div id="success-toast" class="fixed top-5 right-5 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg hidden transform translate-x-full transition-transform duration-300 z-50">
+        <!-- Message set by JS -->
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        // --- Global Functions for onclick attributes ---
+        function showSection(sectionId, clickedLink, isMobile = false) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show the target section
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+
+            // Update active state for all nav links
+            document.querySelectorAll('header nav a, #mobile-menu a').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            // Add active class to the clicked link and its counterpart in the other menu
+            const correspondingLinks = document.querySelectorAll(`a[href="#${sectionId}"]`);
+            correspondingLinks.forEach(link => {
+                link.classList.add('active');
+            });
+
+            // If on mobile, close the menu after clicking
+            if (isMobile) {
+                document.getElementById('mobile-menu').classList.add('hidden');
+            }
+            // Scroll to top of the page
+            window.scrollTo(0, 0);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+                    // --- Mobile Menu ---
+                    const mobileMenuButton = document.getElementById('mobile-menu-button');
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    mobileMenuButton.addEventListener('click', () => {
+                        mobileMenu.classList.toggle('hidden');
+                    });
+
+                    // --- Product & Cart Logic ---
+                    const productList = document.getElementById('product-list');
+                    const cartButton = document.getElementById('cart-button');
+                    const closeCartButton = document.getElementById('close-cart-button');
+                    const cartModal = document.getElementById('cart-modal');
+                    const cartItemsContainer = document.getElementById('cart-items');
+                    const cartCount = document.getElementById('cart-count');
+                    const cartSubtotal = document.getElementById('cart-subtotal');
+                    const cartDiscount = document.getElementById('cart-discount');
+                    const discountRow = document.getElementById('discount-row');
+                    const cartTotal = document.getElementById('cart-total');
+                    const promoCodeInput = document.getElementById('promo-code');
+                    const applyPromoBtn = document.getElementById('apply-promo-btn');
+                    const promoStatus = document.getElementById('promo-status');
+
+                    let cart = [];
+                    let appliedPromoCode = null;
+                    const promoCodes = {
+                        "VIP10": {
+                            type: 'percent',
+                            value: 0.10
+                        }, // 10% off
+                        "SALE20": {
+                            type: 'fixed',
+                            value: 20
+                        }, // $20 off
+                        "THESEM": {
+                            type: 'percent',
+                            value: 0.10
+                        }, // 10% off
+                    };
+
+                    // --- Products Data ---
+                    const products = [{
+                        id: 21,
+                        name: 'Apple Watch S10 42/46mm 99% Original USA',
+                        price: 325,
+                        priceDisplay: '$325 - $345',
+                        image: 'A10.jfif'
+                    }, {
+                        id: 20,
+                        name: 'Charging cable Original USA',
+                        price: 15,
+                        priceDisplay: '$15 - $35',
+                        image: 'A-SAK.jpg',
+                        warranty: 'Warranty 1 year'
+                    }, {
+                        id: 19,
+                        name: 'Airport 1-2 Original',
+                        price: 55,
+                        priceDisplay: '$55 - $80',
+                        image: 'Airport.jpg'
+                    }, {
+                        id: 18,
+                        name: 'Apple Watch S9 41/45mm',
+                        price: 255,
+                        priceDisplay: '$255 - $285',
+                        image: 'A9.jpg'
+                    }, {
+                        id: 17,
+                        name: 'Apple Watch SE1/SE2 44mm',
+                        price: 150,
+                        priceDisplay: '$150 - $175',
+                        image: 'SE2.jpg'
+                    }, {
+                        id: 16,
+                        name: 'Apple Watch S8 45mm',
+                        price: 235,
+                        priceDisplay: '$235',
+                        image: 'S7.jpg'
+                    }, {
+                        id: 15,
+                        name: 'Apple Watch S5/S6 44mm',
+                        price: 145,
+                        priceDisplay: '$145 - $175',
+                        image: 'A5.jpg'
+                    }, {
+                        id: 14,
+                        name: 'Apple Watch S4/S5/S6 40mm',
+                        price: 115,
+                        priceDisplay: '$115 - $180',
+                        image: 'A.Small.jpg'
+                    }, {
+                        id: 13,
+                        name: 'Apple Watch S4 44mm',
+                        price: 125,
+                        priceDisplay: '$125',
+                        image: 'A.4.jpg'
+                    }, {
+                        id: 12,
+                        name: 'Apple Watch S7 45mm',
+                        price: 200,
+                        priceDisplay: '$200',
+                        image: 'APPLE WATCH S7.webp'
+                    }, {
+                        id: 11,
+                        name: 'Apple Watch S3 38MM',
+                        price: 75,
+                        priceDisplay: '$75',
+                        image: 'A3.jpg'
+                    }, ];
+
+                    function renderProducts() {
+                        if (!productList) return;
+                        productList.innerHTML = '';
+                        products.forEach(product => {
+                                    const productCard = `
+                        <div class="card rounded-xl overflow-hidden flex flex-col group transform hover:-translate-y-2 transition-transform duration-300">
+                            <div class="relative">
+                                <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover">
+                                ${product.warranty ? `<div class="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1"><i class="fas fa-shield-alt"></i> ${product.warranty}</div>` : ''}
+                            </div>
+                            <div class="p-4 flex flex-col flex-grow">
+                                <h3 class="font-bold text-main flex-grow">${product.name}</h3>
+                                <p class="text-amber-500 font-bold text-lg my-2">${product.priceDisplay}</p>
+                                <div class="mt-auto pt-2">
+                                    <div class="flex items-center justify-between mb-2 p-1 rounded-md bg-input-bg border border-input-border">
+                                        <button class="w-8 h-8 rounded-md flex-shrink-0" style="background-color: var(--quantity-btn-bg);" onclick="changeProductQuantity(${product.id}, -1)">-</button>
+                                        <input id="quantity-${product.id}" type="number" value="1" min="1" class="w-full text-center bg-transparent border-0 text-main font-bold focus:outline-none focus:ring-0">
+                                        <button class="w-8 h-8 rounded-md flex-shrink-0" style="background-color: var(--quantity-btn-bg);" onclick="changeProductQuantity(${product.id}, 1)">+</button>
+                                    </div>
+                                    <button class="btn-primary w-full" onclick="addToCart(${product.id})">
+                                        <i class="fas fa-cart-plus mr-2"></i>បន្ថែមទៅរទេះ
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    productList.innerHTML += productCard;
+                });
+            }
+            
+            window.changeProductQuantity = (productId, change) => {
+                const quantityInput = document.getElementById(`quantity-${productId}`);
+                if (quantityInput) {
+                    let currentValue = parseInt(quantityInput.value, 10);
+                    if (isNaN(currentValue)) currentValue = 1;
+                    let newValue = currentValue + change;
+                    if (newValue < 1) {
+                        newValue = 1;
+                    }
+                    quantityInput.value = newValue;
+                }
+            };
+
+            window.addToCart = (productId) => {
+                const product = products.find(p => p.id === productId);
+                const quantityInput = document.getElementById(`quantity-${productId}`);
+                let quantity = quantityInput ? parseInt(quantityInput.value, 10) : 1;
+
+                if (!product || isNaN(quantity) || quantity < 1) {
+                    quantity = 1;
+                }
+
+                const existingItem = cart.find(item => item.id === productId);
+
+                if (existingItem) {
+                    existingItem.quantity += quantity;
+                } else {
+                    cart.push({ ...product, quantity: quantity });
+                }
+
+                if (quantityInput) {
+                    quantityInput.value = 1; // Reset quantity to 1
+                }
+
+                updateCart();
+                openCart();
+                showToast(`(${quantity}) ${product.name} បានបន្ថែម!`);
+            };
+
+            function updateCart() {
+                if (!cartItemsContainer) return;
+                cartItemsContainer.innerHTML = '';
+                let subtotal = 0;
+                let count = 0;
+
+                if (cart.length === 0) {
+                    cartItemsContainer.innerHTML = '<p class="text-subtle text-center mt-8">រទេះទំនិញរបស់អ្នកនៅទទេ</p>';
+                } else {
+                    cart.forEach(item => {
+                        const itemTotal = item.price * item.quantity;
+                        subtotal += itemTotal;
+                        count += item.quantity;
+                        const cartItem = `
+                             <div class="flex items-center gap-3 py-3 border-b border-main">
+                                <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-md flex-shrink-0">
+                                <div class="flex-grow min-w-0">
+                                    <p class="font-bold text-main text-sm truncate">${item.name}</p>
+                                    <div class="flex items-center gap-2 mt-2">
+                                        <div class="flex items-center gap-1 cart-item-quantity">
+                                            <button onclick="changeQuantity(${item.id}, -1)" class="w-6 h-6 rounded-md flex-shrink-0 text-xs">-</button>
+                                            <input type="number" value="${item.quantity}" class="w-8 text-center rounded-md p-0 text-sm" readonly>
+                                            <button onclick="changeQuantity(${item.id}, 1)" class="w-6 h-6 rounded-md flex-shrink-0 text-xs">+</button>
+                                        </div>
+                                         <p class="text-subtle text-xs"> x $${item.price.toFixed(2)}</p>
+                                    </div>
+                                </div>
+                                <div class="text-right flex-shrink-0">
+                                    <p class="font-semibold text-amber-500 text-base">$${itemTotal.toFixed(2)}</p>
+                                </div>
+                                <button onclick="removeFromCart(${item.id})" class="text-red-500 hover:text-red-400 text-xl flex-shrink-0">&times;</button>
+                            </div>
+                        `;
+                        cartItemsContainer.innerHTML += cartItem;
+                    });
+                }
+                
+                let discount = 0;
+                if (appliedPromoCode) {
+                    if (appliedPromoCode.type === 'percent') {
+                        discount = subtotal * appliedPromoCode.value;
+                    } else if (appliedPromoCode.type === 'fixed') {
+                        discount = appliedPromoCode.value;
+                    }
+                    discountRow.classList.remove('hidden');
+                    cartDiscount.textContent = `-$${discount.toFixed(2)}`;
+                } else {
+                    discountRow.classList.add('hidden');
+                }
+
+                let total = subtotal - discount;
+                if (total < 0) total = 0;
+
+                cartCount.textContent = count;
+                cartSubtotal.textContent = `$${subtotal.toFixed(2)}`;
+                cartTotal.textContent = `$${total.toFixed(2)}`;
+            }
+            
+            window.changeQuantity = (productId, change) => {
+                const item = cart.find(i => i.id === productId);
+                if (item) {
+                    item.quantity += change;
+                    if (item.quantity <= 0) {
+                        window.removeFromCart(productId);
+                    } else {
+                        updateCart();
+                    }
+                }
+            };
+
+            window.removeFromCart = (productId) => {
+                cart = cart.filter(item => item.id !== productId);
+                if (cart.length === 0) {
+                    appliedPromoCode = null; // Remove promo if cart is empty
+                    promoCodeInput.value = '';
+                    promoStatus.textContent = '';
+                }
+                updateCart();
+            };
+            
+            applyPromoBtn.addEventListener('click', () => {
+                const code = promoCodeInput.value.toUpperCase();
+                if (promoCodes[code]) {
+                    appliedPromoCode = { code, ...promoCodes[code] };
+                    promoStatus.textContent = `បានប្រើលេខកូដ "${code}"!`;
+                    promoStatus.className = 'text-xs mt-2 h-4 text-green-400';
+                    updateCart();
+                } else {
+                    appliedPromoCode = null;
+                    promoStatus.textContent = 'លេខកូដប្រូម៉ូសិនមិនត្រឹមត្រូវ';
+                    promoStatus.className = 'text-xs mt-2 h-4 text-red-400';
+                    updateCart();
+                }
+            });
+
+            const openCart = () => cartModal.classList.remove('hidden');
+            const closeCart = () => cartModal.classList.add('hidden');
+
+            cartButton.addEventListener('click', openCart);
+            closeCartButton.addEventListener('click', closeCart);
+            cartModal.addEventListener('click', (e) => {
+                if (e.target === cartModal) {
+                    closeCart();
+                }
+            });
+
+            // --- Payment Logic ---
+            const checkoutBtn = document.getElementById('checkout-btn');
+            const paymentModal = document.getElementById('payment-modal');
+            const closePaymentModalBtn = document.getElementById('close-payment-modal-btn');
+            const paymentTotal = document.getElementById('payment-total');
+            const backToCartBtn = document.getElementById('back-to-cart-btn');
+            const confirmPaymentBtn = document.getElementById('confirm-payment-btn');
+            const successToast = document.getElementById('success-toast');
+
+            function openPaymentModal() {
+                paymentTotal.textContent = cartTotal.textContent;
+                closeCart();
+                paymentModal.classList.remove('hidden');
+                paymentModal.classList.add('flex');
+            }
+
+            function closePaymentModal() {
+                paymentModal.classList.add('hidden');
+                paymentModal.classList.remove('flex');
+            }
+
+            function showToast(message) {
+                successToast.innerHTML = `<i class="fas fa-check-circle mr-2"></i> ${message}`;
+                successToast.classList.remove('hidden', 'translate-x-full');
+                setTimeout(() => {
+                    successToast.classList.add('translate-x-full');
+                    setTimeout(() => {
+                        successToast.classList.add('hidden');
+                    }, 300);
+                }, 3000);
+            }
+
+            checkoutBtn.addEventListener('click', () => {
+                if (cart.length > 0) {
+                    openPaymentModal();
+                } else {
+                    alert('រទេះទំនិញរបស់អ្នកនៅទទេ!');
+                }
+            });
+
+            backToCartBtn.addEventListener('click', () => {
+                closePaymentModal();
+                openCart();
+            });
+
+            closePaymentModalBtn.addEventListener('click', closePaymentModal);
+
+            confirmPaymentBtn.addEventListener('click', () => {
+                closePaymentModal();
+                showToast('ការទូទាត់បានជោគជ័យ!');
+                cart = [];
+                appliedPromoCode = null;
+                promoCodeInput.value = '';
+                promoStatus.textContent = '';
+                updateCart();
+            });
+
+            // --- VIP Form Logic ---
+            const vipForm = document.getElementById('vip-form');
+            vipForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                showToast('អរគុណសម្រាប់ការចុះឈ្មោះជាសមាជិក VIP!');
+                vipForm.reset();
+            });
+
+
+            // --- Wheel Logic ---
+            const canvas = document.getElementById('wheel-canvas');
+            const spinBtn = document.getElementById('spin-btn');
+            const prizeModal = document.getElementById('prize-modal');
+            const prizeText = document.getElementById('prize-text');
+            const closePrizeModalBtn = document.getElementById('close-prize-modal-btn');
+            const totalPointsDisplay = document.getElementById('total-points');
+
+            let totalPoints = parseInt(localStorage.getItem('userTotalPoints')) || 0;
+
+            const prizes = [
+                { text: 'Try Again', text_km: 'សាកម្តងទៀត', color: '#78716c' },
+                { text: 'Discount 10%', text_km: 'បញ្ចុះតម្លៃ 10%', color: '#6A1B9A', type: 'code', code: 'SPIN10' },
+                { text: '10 Points', text_km: '10 ពិន្ទុ', color: '#f59e0b', type: 'points', value: 10 },
+                { text: 'Try Again', text_km: 'សាកម្តងទៀត', color: '#78716c' },
+                { text: 'Watch Strap', text_km: 'ខ្សែនាឡិកា', color: '#1E88E5' },
+                { text: '10 Points', text_km: '10 ពិន្ទុ', color: '#f59e0b', type: 'points', value: 10 },
+                { text: 'Phone Cable', text_km: 'ខ្សែសាកទូរស័ព្ទ', color: '#D81B60' },
+                { text: '10 Points', text_km: '10 ពិន្ទុ', color: '#f59e0b', type: 'points', value: 10 },
+                { text: 'Try Again', text_km: 'សាកម្តងទៀត', color: '#78716c' },
+                { text: '10 Points', text_km: '10 ពិន្ទុ', color: '#f59e0b', type: 'points', value: 10 },
+                { text: 'Watch Cable', text_km: 'ខ្សែសាកនាឡិកា', color: '#00897B' },
+                { text: '10 Points', text_km: '10 ពិន្ទុ', color: '#f59e0b', type: 'points', value: 10 },
+                { text: 'Try Again', text_km: 'សាកម្តងទៀត', color: '#78716c' },
+                { text: 'Have a Nice Day', text_km: 'សូមអោយសំណាងល្អ', color: '#3949AB' },
+                { text: 'Try Again', text_km: 'សាកម្តងទៀត', color: '#78716c' },
+            ];
+
+            const ctx = canvas.getContext('2d');
+            const numSegments = prizes.length;
+            const arcSize = (2 * Math.PI) / numSegments;
+            let isSpinning = false;
+
+            function updateTotalPointsDisplay() {
+                if(totalPointsDisplay) {
+                    totalPointsDisplay.textContent = totalPoints;
+                }
+            }
+            
+            function drawWheel() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.save();
+                ctx.translate(canvas.width / 2, canvas.height / 2);
+                
+                prizes.forEach((prize, i) => {
+                    const angle = arcSize * i;
+                    ctx.beginPath();
+                    ctx.arc(0, 0, canvas.width / 2 - 5, angle, angle + arcSize);
+                    ctx.lineTo(0,0);
+                    ctx.fillStyle = prize.color;
+                    ctx.fill();
+                    
+                    ctx.save();
+                    ctx.rotate(angle + arcSize / 2);
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.textAlign = 'right';
+                    ctx.textBaseline = 'middle';
+                    
+                    ctx.font = 'bold 11px "Inter"';
+                    ctx.fillText(prize.text, canvas.width / 2 - 20, -7);
+                    
+                    ctx.font = '11px "Kantumruy Pro"';
+                    ctx.fillText(prize.text_km, canvas.width / 2 - 20, 8);
+                    
+                    ctx.restore();
+                });
+                ctx.restore();
+            }
+
+            function spin() {
+                if (isSpinning) return;
+                isSpinning = true;
+                spinBtn.disabled = true;
+
+                const spinAngle = Math.random() * 3600 + 3600; // Random rotation
+                canvas.style.transform = `rotate(${spinAngle}deg)`;
+
+                setTimeout(() => {
+                    const finalAngle = spinAngle % 360;
+                    const degreesPerSegment = 360 / numSegments;
+                    const winningIndex = Math.floor((360 - finalAngle) / degreesPerSegment);
+                    
+                    const wonPrize = prizes[winningIndex];
+
+                    // Handle prize logic
+                    if (wonPrize.type === 'points') {
+                        totalPoints += wonPrize.value;
+                        localStorage.setItem('userTotalPoints', totalPoints);
+                        updateTotalPointsDisplay();
+                        prizeText.innerHTML = `${wonPrize.text}<br><span class="text-sm font-normal">${wonPrize.text_km}</span>`;
+                    } else if (wonPrize.type === 'code') {
+                        prizeText.innerHTML = `${wonPrize.text}<br><span class="text-sm font-normal">${wonPrize.text_km}</span><br><span class="text-xs mt-2 inline-block bg-input-bg text-main px-2 py-1 rounded">Code: ${wonPrize.code}</span>`;
+                         if (!promoCodes[wonPrize.code]) {
+                            promoCodes[wonPrize.code] = { type: 'percent', value: 0.10 };
+                        }
+                    } else {
+                         prizeText.innerHTML = `${wonPrize.text}<br><span class="text-sm font-normal">${wonPrize.text_km}</span>`;
+                    }
+
+                    prizeModal.classList.remove('hidden');
+                    prizeModal.classList.add('flex');
+
+                    isSpinning = false;
+                    spinBtn.disabled = false;
+                    canvas.style.transition = 'none';
+                    canvas.style.transform = `rotate(${finalAngle}deg)`;
+                    setTimeout(() => { canvas.style.transition = 'transform 5s cubic-bezier(0.25, 0.1, 0.25, 1)';}, 10);
+                }, 5000); // Must match CSS transition time
+            }
+
+            spinBtn.addEventListener('click', spin);
+            closePrizeModalBtn.addEventListener('click', () => {
+                prizeModal.classList.add('hidden');
+                prizeModal.classList.remove('flex');
+            });
+
+
+            // --- Initial Load ---
+            showSection('home', document.querySelector('a[href="#home"]'));
+            renderProducts();
+            drawWheel();
+            updateTotalPointsDisplay();
+            
+            // Generate QR Code for website
+            const qrCodeElement = document.getElementById('website-qr-code');
+            if (qrCodeElement) {
+                new QRCode(qrCodeElement, {
+                    text: window.location.href,
+                    width: 128,
+                    height: 128,
+                    colorDark : "#000000",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.H
+                });
+            }
+
+        });
+    </script>
+</body>
+
+</html>
